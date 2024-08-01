@@ -1,0 +1,25 @@
+ORG 0x0
+
+// Enable EA and KEY (IE)
+MOV 0xA8, #0xA0
+// Enable Keyboard (KCON)
+MOV 0xA3, #0x4
+// Enable Text Mode (DMOD)
+MOV 0xA1, #0x30
+
+LOOP:
+JNC LOOP
+
+// Keyboard ISR
+CSEG_AT 0x30
+// Put the content received (KBUF) into LEDs (P2)
+MOV 0xA0, 0xA4
+// Put the content received (KBUF) into Display (DBUF)
+MOV 0xA2, 0xA4
+// Enable new text flag (DMOD)
+MOV 0xA1, #0x70
+// Clear carry (PSW)
+MOV 0xD0, #0x0
+RETI
+
+END

@@ -1,0 +1,32 @@
+ORG 0x0
+
+// Enable EA and KEY (IE)
+MOV 0xA8, #0xA0
+// Enable Keyboard (KCON)
+MOV 0xA3, #0x4
+// Enable filters (DMOD)
+MOV 0xA1, #0x20
+
+LOOP:
+JNC LOOP
+
+// Keyboard ISR
+CSEG_AT 0x30
+// Put the content received (KBUF) into LEDs (P2)
+MOV 0xA0, 0xA4
+// Put the content received (KBUF) into Display (DBUF)
+MOV 0xA2, 0xA4
+// Update the ACC with the DMOD value
+MOV A, 0xA1
+// Add one unit to change the filter
+ADD A, #0x01
+// Apply the mask (clear upper nibble and mantain resolution)
+ANL A, #0x2F
+// Update the DMOD
+MOV 0xA1, A
+// Clear carry (PSW)
+MOV 0xD0, #0x0
+
+RETI
+
+END

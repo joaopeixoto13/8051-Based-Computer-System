@@ -1,0 +1,29 @@
+ORG 0x0
+
+// Enable EA and KEY (IE)
+MOV 0xA8, #0xA0
+// Enable Keyboard (KCON)
+MOV 0xA3, #0x4
+// Enable Text Mode (DMOD)
+MOV 0xA1, #0x20
+
+LOOP:
+JNC LOOP
+
+// Keyboard ISR
+CSEG_AT 0x30
+// Put the content received (KBUF) into LEDs (P2)
+MOV 0xA0, 0xA4
+// Put the content received (KBUF) into Display (DBUF)
+MOV 0xA2, 0xA4
+// Get the DTMCON configuration
+MOV A, 0xA5
+// Change the configuration
+ADD A, #0x01
+// Update the DTMCON
+MOV 0xA5, A
+// Update DMOD
+MOV 0xA1, #0x70
+RETI
+
+END

@@ -1,0 +1,31 @@
+ORG 0x0
+
+// Enable EA and ES0 in IE
+MOV 0xA8, #0x90
+// Enable UART Reception (SCON[4])
+MOV 0x98, #0x10
+
+LOOP:
+JNC LOOP
+
+// Reception
+RECEIVED_DATA:
+// Put into the LEDs (P2) the content received (SBUF)
+MOV 0xA0, 0x99
+// Clear UART reception flag and enable Transmission
+MOV 0x98, #0x18
+RETI
+
+// UART ISR
+CSEG_AT 0x23
+
+MOV A, #0x1
+ANL A, 0x98
+JNZ RECEIVED_DATA
+
+// Transmission
+// Clear UART transmission flag and Clear enable Transmission
+MOV 0x98, #0x10
+RETI
+
+END
